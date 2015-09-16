@@ -24,6 +24,44 @@ sample_url= "http://www.leboncoin.fr/informatique/offres/ile_de_france/?ps=4&pe=
     - q = keywords (can take and/or operators, and more)
 """
 
+
+class Corner(object):
+    title = ""
+    url = ""
+    price = ""
+    location = ""
+    date = ""
+    category = ""
+    image = ""
+		
+    #constructor the de-structor!!  
+    def __init__(self, title, url, price, location, date, category, image):
+        self.title = title
+        self.url = url
+        self.price = price
+        self.location = location
+        self.date = date
+        self.category = category
+        self.image = image
+
+    #the stringifing printer.... Python is so pretty
+    def __str__(self):
+        return " Titre: %s \n URL: %s \n Prix: %s \n" % (self.title, self.url, self.price)
+
+    def get_corners(url):
+        #corners = []
+        corner_dicts = scrape_listings(url)
+        #for corner_dict in corner_dicts:
+        #    corner = Corner(corner_dict['titre'], corner_dict['url'], corner_dict['prix'], corner_dict['location'], corner_dict['date'], corner_dict['category'],corner_dict['image'])
+        #corners.append(corner)
+        return corner_dicts
+    def get_recent_corners(url):
+        corners = scrape_listings(url)
+        recents = get_recent(corners)
+        return recents
+
+
+
 def scrape_listings(url):
     computers = []# define array of listings
     r = requests.get(url)
@@ -32,7 +70,8 @@ def scrape_listings(url):
     x = 0 # Counter, Why not?
     for ordinateur in ordinateurs:
         url = ordinateur.find_parent('a')['href']
-        image_url = ordinateur.find("img")['src']
+        #images need to be something like, if in class=image div, find img element 
+        image_url = "" #ordinateur.find("img")['src'].text
         date = ordinateur.find("div", {'class':'date'}).text.replace('\n'," ").strip()
         details = ordinateur.find('div', {'class':'detail'})
         title = str(details.find('h2', {'class':'title'}).string).replace('\n', '').strip()

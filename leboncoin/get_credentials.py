@@ -20,8 +20,7 @@ def simple_verifier(url):
     return input('Verifier: ') # they will get a code back
 
 pump = PyPump(client=client, verifier_callback=simple_verifier)
-client_credentials = pump.get_registration() # will return [<key>, <secret>, <expirey>]
-client_tokens = pump.get_token() # [<token>, <secret>]
 
-print("client_credentials: %s,%s" % (client_credentials[0],client_credentials[1]))
-print("client_tokens: %s,%s" % (client_tokens[0],client_tokens[1]))
+print(pump.client.key + ': key')
+print(pump.client.secret + ': secret')
+print('Get the Token + Verification from the browser')

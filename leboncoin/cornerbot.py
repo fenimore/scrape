@@ -13,46 +13,36 @@ import os
 from datetime import datetime
 
 from pypump import PyPump, Client
-from pypump.models.image import Image
 from pypump.models.collection import Collection
 from pypump.models.collection import Public
 from pypump.models.person import Person
 from pypump.exception import PyPumpException
 
-import goodcorners.py
+from goodcorner import Corner
 
+"""
+     Place the credentials below for the pump.io account
+     These can be obtained by using: http://polari.us/dokuwiki/doku.php?id=navierstokes#a_simple_program_to_authenticate_pypump_against_your_pumpio_instance
+      or use the get_credentials script for python 3
+"""
 
-# Place the credentials below for the pump.io account
-# These can be obtained by using: http://polari.us/dokuwiki/doku.php?id=navierstokes#a_simple_program_to_authenticate_pypump_against_your_pumpio_instance
-
-client_credentials = ['XXX', 'XXX']
-client_tokens = ['XXX', 'XXX']
+client_credentials = ['hugs', 'kisses']
+client_tokens = ['puppies', 'kittens'] # These don't go anywhere, but steve had them
 
 # Webfinger for your account
 webfinger = "goodcorners@hotpump.net"
 
 # Important: define a log file that contains a list of activities to which
 # we have already responded.
-logfile_name = "cornerbot.activity.log"
+#logfile_name = "cornerbot.activity.log"
 
 def simple_verifier(url):
-    print 'Go to: ' + url
+    print('Go to: ' + url)
     return input('Verifier: ') # they will get a code back
-
-
-def reply(activity,my_reply):
-    try:
-        activity.obj.comment(my_reply)
-    except PyPumpException:
-        print "   ... PyPumpException - ERROR - I will try to get this request next time!"
-        return False
-        pass
-        
-    return True
-
-
-# DEFINE FUNCTIONS
-
+    
+"""
+    Functions for leboncoin
+"""
 
 client = Client(
     webfinger,
@@ -64,22 +54,36 @@ client = Client(
 
 # archive of activities I have already processed
 
-process_log = open(logfile_name,'a+')
+#process_log = open(logfile_name,'a+')
 
 #while 1==1:
 pump = PyPump(
     client=client,
-    token=client_tokens[0], # the token key
-    secret=client_tokens[1], # the token secret
+    #token=client_tokens[0], # the token key NOT NEEDED?
+    #secret=client_tokens[1], # the token secret NOT NEEDED?
     verifier_callback=simple_verifier
 )
 
 
+#posting.send()
+# gather the listings
+# and format the most recent three
+# and add their prices to the note total
+corners = Corner.get_recent_corners('http://www.leboncoin.fr/informatique/offres/ile_de_france/?ps=4&pe=8&q=thinkpad&th=1')
+listing = ""
+header = ""
+for corner in corners:
+    listing += corner['titre'] + "\n" + corner['url']+ "\n\n\n"
+    header += corner['prix'] #header = corners[0]['prix'] + corners[1]['prix']  + "et " + corners[2]['prix']
+posting = pump.Note(listing, header)
+posting.send()
+print(listing + header)
+# + " pour " + corners[0]['price'] + " à " + corners[0]['location'] + "\n "
    
 #    print "Sleeping until next cycle..."
 #    time.sleep(300000000000)
 
-process_log.close()
+#process_log.close()
     
 
 
