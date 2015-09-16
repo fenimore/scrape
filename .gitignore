@@ -1,3 +1,10 @@
+pump-private.py
+hands-on-analysis-python/
+Notebooks/
+new-york-times-private.py
+__pycache__/
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

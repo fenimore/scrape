@@ -1,6 +1,5 @@
 """
-    Python 3 Desktop Scraper
-    Fenimore Love
+    Python 3 scraper for 'simple desktop'
     MIT License
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
