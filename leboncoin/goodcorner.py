@@ -78,6 +78,13 @@ def scrape_listings(url):
         category = str(details.find('div', {'class':'category'}).string).replace('\n', '').strip()
         placement = str(details.find('div', {'class':'placement'}).string).replace('\n', '').strip().replace('                                                                                            /                                                                                                                            	                                        '," ")
         price =  str(details.find('div', {'class':'price'}).string).replace('\n', '').strip()
+        ## Images are a bit more complicated:
+        try:
+            image_div = ordinateur.find('div', {'class':'image'})
+            image_nb = image_div.find('div', {'class':'image-and-nb'})
+            image_url = image_nb.find('img')['src']
+        except:
+            image_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/200px-No_image_available.svg.png" # No-image image        
         # The ordinateur has english attributes
         # et le computer avais les francais
         computer = {'url':url, 'titre': title, 'prix': price,'location': placement, 'image': image_url, 'date':date, 'category': category }

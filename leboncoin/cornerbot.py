@@ -26,7 +26,7 @@ from goodcorner import Corner
       or use the get_credentials script for python 3
 """
 
-client_credentials = ['hugs', 'kisses']
+client_credentials = []
 client_tokens = ['puppies', 'kittens'] # These don't go anywhere, but steve had them
 
 # Webfinger for your account
@@ -69,21 +69,62 @@ pump = PyPump(
 # gather the listings
 # and format the most recent three
 # and add their prices to the note total
-corners = Corner.get_recent_corners('http://www.leboncoin.fr/informatique/offres/ile_de_france/?ps=4&pe=8&q=thinkpad&th=1')
+todays_corners = []
 listing = ""
 header = ""
-for corner in corners:
-    listing += corner['titre'] + "\n" + corner['url']+ "\n\n\n"
-    header += corner['prix'] #header = corners[0]['prix'] + corners[1]['prix']  + "et " + corners[2]['prix']
-posting = pump.Note(listing, header)
-posting.send()
-print(listing + header)
-# + " pour " + corners[0]['price'] + " à " + corners[0]['location'] + "\n "
-   
-#    print "Sleeping until next cycle..."
-#    time.sleep(300000000000)
+
+#process_log = open(logfile_name,'a+')
+
+while 1==1:
+    time = str(datetime.now())
+    header += time + " - Paris - " 
+    """
+        Gather the Le bon Coin Annonces
+        for thinkpads entre 40 et 200 euros
+    """
+    corners = Corner.get_recent_corners('http://www.leboncoin.fr/informatique/offres/ile_de_france/?ps=4&pe=8&q=thinkpad&th=1')
+    for corner in corners:
+        # Set up HTML Styled Posting for Pump.io
+        listing += "<table><tr><td><img src=" + corner['image'] + " width=100px height=auto/></td><td><b>" + corner['titre'] + "</b><br><a href=" + corner['url'] + " >Annonce</a> " + corner['location']+" pour " + corner['prix'] + "<br>" + corner['date'] +"</td></tr></table>" 
+        listing += "<br>"
+        header += corners[x]['prix']
+    """
+        Remove the postings which the
+        Cornerbot has already posted
+    """
+    for corner in corners:
+        if corner in todays_corners:
+            corners.remove(corner)
+            print("found one duplicate")    
+    """
+        If there are not 0 new postings
+        Post to pump.io
+    """
+    if not not corners:
+        posting = pump.Note(listing, header)
+        posting.to = pump.Person("polypmer@microca.st")
+        posting.send()
+        print("posting " +time)
+    else:
+        print("No new items")
+    # Finished Post
+    listing = ""
+    header = ""
+    todays_corners.append(corners)
+    print("TODAYS CORNERS:")
+    print(todays_corners)
+    print("\n\n####CORNERS:\n\n")
+    print(corners)
+    print("\n\nSleep Now")
+    time.sleep(3000)
 
 #process_log.close()
     
+    """
+    for x in range(2):
+        listing += "<table><tr><td><img src=" + corners[x]['image'] + " width=100px height=auto/></td><td><b>" + corners[x]['titre'] + "</b><br><a href=" + corners[x]['url'] + " >Annonce</a> " + corners[x]['location']+" pour " + corners[x]['prix'] + "<br>" + corners[x]['date'] +"</td></tr></table>" 
+        listing += "<br>" 
+        # "<br><b>" + corner['titre'] + "</b><br><img src=" + corner['image'] + " width=30px height=auto/><br><a href=" + corner['url'] + " >Annonce</a> " + corner['location']+" pour " + corner['prix'] + "<br><br>"  
+        """ 
 
 
