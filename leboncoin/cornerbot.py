@@ -123,17 +123,11 @@ while 99==99:
         posting.to = pump.Person("polypmer@microca.st")
         #posting.send()
         print("posting " +timestamp)
-        print(todays_corners)
     else:
         print("no new corners\n\n\n")
     # Finished Post
     listing = ""
     header = ""
-    print("TODAYS CORNERS:")
-    print(todays_corners)
-    print("\n\n####CORNERS:\n\n")
-    print(new_corners)
-    todays_corners.append(new_corners)
     print("\n\nSleep Now")
     time.sleep(3)
 
