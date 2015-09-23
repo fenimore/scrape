@@ -88,13 +88,12 @@ def scrape_listings(url):
         # The ordinateur has english attributes
         # et le computer avais les francais
         computer = {'url':url, 'titre': title, 'prix': price,'location': placement, 'image': image_url, 'date':date, 'category': category }
-        #computer = tuple(sorted(computer.items()))
-        """Send Dicts
-        """
-        computers.append(computer)
+        computer_set = {tuple(sorted(computer.items()))}
+        # computer is a dictionary, so far lacking the actual url
+        #computers.append(computer)
         #x += 1
         #print(x)
-    return computers #returns a list of tuples
+    return computers
     
 """
     Computer = {
@@ -105,12 +104,10 @@ def scrape_listings(url):
 def get_recent(computers): # get the computers listed TODAY
     recent_computers = []
     for computer in computers:
-        computer = dict(computer)
         today = str(datetime.datetime.now().day) + '-' + str(datetime.datetime.now().month)
         c = re.compile('Aujourd\'hui')
         if c.match(computer['date']):
             computer['date'] = computer['date'].replace('Aujourd\'hui', today)
-            #computer = tuple(sorted(computer))
             recent_computers.append(computer)
     return recent_computers
 
